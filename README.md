@@ -1,6 +1,6 @@
 # Gaffa-ReqEng
 
-Engineer a Gaffa-js form from MSExcel file.xlsx
+Engineer a Gaffa-js form from csv
 
 ## Install
 
