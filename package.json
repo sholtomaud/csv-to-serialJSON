@@ -1,0 +1,20 @@
+{
+  "name": "package",
+  "version": "0.0.0",
+  "dependencies": {
+    "google-spreadsheet":"^0.2.x"
+  },
+  "devDependencies": {
+    "stylus": "^0.42.2",
+    "gulp": "^3.6.0",
+    "gulp-browserify": "^0.5.0",
+    "gulp-stylus": "^0.1.0",
+    "gulp-concat": "^2.2.0",
+    "gulp-uglify": "^0.2.1",
+    "gulp-connect": "^2.0.5"
+  },
+  "engines": {
+    "node": "X.X.X",
+    "npm": ">=1.2.10"
+  }
+}
