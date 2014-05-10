@@ -6,44 +6,74 @@
 
 //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-console.log('requireing google-spreadsheet');
-var GoogleSpreadsheet = require("google-spreadsheet");
 
-console.log('getting spreadsheet with key');
-var my_sheet = new GoogleSpreadsheet('0Ak7zX9keQNghdC1KejgxRVo1Wl9XcnlvNGRZSXAyWUE');
+var xlsxj = require("xlsx-to-json"),
+	Converter = require("csvtojson").core.Converter,
+	fs = require("fs"),
+	inquirer = require("inquirer"),
+	glob = require("glob");
 
-// without auth -- read only
-// # is worksheet id - IDs start at 1
-//my_sheet.getRows( 1, function(err, row_data){
-//    console.log( 'pulled in '+row_data.length + ' rows ')
-//})
+console.log("Generate Gaffa code from .csv requirements file")
 
-console.log('authenticating');
-// set auth to be able to edit/add/delete
-my_sheet.setAuth('sholto.maud@gmail.com','AIzaSyAIHvxiuGuzLqxBartg-1GPsDf4iFir6xE', function(err){
-    my_sheet.getInfo( function( err, sheet_info ){
-        console.log( sheet_info + ' is loaded' );
-        // use worksheet object if you want to forget about ids
-        sheet_info.worksheets[0].getRows( function( err, rows ){
-            //rows[0].colname = 'new val';
-            //rows[0].save();
-            //rows[0].del();
-        	console.log('rows');
- 	      	console.log(rows);
-        });
-    });
 
-    // column names are set by google based on the first row of your sheet
-    //my_sheet.addRow( 2, { colname: 'col value'} );
+
+
+glob("*.csv", function (err,files){
+	var questions = [
+		{
+	 		type: "list",
+		    name: "file",
+		    message: "What .csv file would you like to use??",
+		    choices: files,
+		    when: function( answers ) {
+		      return answers.comments !== "Nope, all good!";
+		    }
+	  	}];
+	  
+	inquirer.prompt(questions, function( selected ) {
+	    // Use user feedback for... whatever!!
+	    console.log("\nReturn:");
+	    console.log(JSON.stringify(selected,null, "  "));
+
+
+	    //Converter Class
+		
+		var csvFileName = selected.file;
+		var fileStream = fs.createReadStream(csvFileName);
+		
+		console.log(fileStream);
+		//new converter instance
+		var csvConverter = new Converter({constructResult:true});
+
+		//end_parsed will be emitted once parsing finished
+		csvConverter.on("end_parsed",function(jsonObj){
+		   console.log(jsonObj); //here is your result json object
+		});
+
+		//read from file
+		fileStream.pipe(csvConverter);
+
+
 /*
-    my_sheet.getRows( 1, {
-        start: 1,            // start index
-        num: 100            // number of rows to pull
-    	}, function(err, row_data){
-       	console.log('row_data');
-       	console.log(row_data);
-        // do something...
-    });
+		xlsxj({
+		    input: selected.file, 
+		    output: null
+		  }, function(err, result) {
+		    if(err) {
+		      console.error(err);
+		    }else {
+		      console.log(result);
+		    }
+		 });
 */
 
+	});
 });
+
+
+
+
+
+/*
+  
+*/  

@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "dependencies": {
     "google-spreadsheet":"^0.2.x",
-    "xlsx-to-json":"^0.2.x"
+    "xlsx-to-json":"^0.2.x",
+    "csvtojson":"^0.3.x",
+    "glob":"3.2.x",
+    "inquirer":"^0.4.x"
   },
   "devDependencies": {
     "stylus": "^0.42.2",
