@@ -8,67 +8,75 @@
 
 
 var xlsxj = require("xlsx-to-json"),
-	Converter = require("csvtojson").core.Converter,
-	fs = require("fs"),
-	inquirer = require("inquirer"),
-	glob = require("glob");
+Converter = require("csvtojson").core.Converter,
+fs = require("fs"),
+inquirer = require("inquirer"),
+glob = require("glob");
 
 console.log("Generate Gaffa code from .csv requirements file");
 
 glob("*.csv", function (err,files){
-	var questions = [
-		{
-	 		type: "list",
-		    name: "file",
-		    message: "What .csv file would you like to use??",
-		    choices: files,
-		    when: function( answers ) {
-		      return answers.comments !== "Nope, all good!";
-		    }
-	  	}];
-	  
-	inquirer.prompt(questions, function( selected ) {
-	    // Use user feedback for... whatever!!
-	    console.log("\nReturn:");
-	    console.log(JSON.stringify(selected,null, "  "));
+var questions = [
+{
+		type: "list",
+    name: "file",
+    message: "What .csv file would you like to use??",
+    choices: files,
+    when: function( answers ) {
+      return answers.comments !== "Nope, all good!";
+    }
+	}];
+
+inquirer.prompt(questions, function( selected ) {
+  // Use user feedback for... whatever!!
+  console.log("\nReturn:");
+    console.log(JSON.stringify(selected,null, "  "));
 
 
-	    //Converter Class
-		
-		var csvFileName = selected.file;
-		console.log("csvFileName "+csvFileName);
+    //Converter Class
+	
+	var csvFileName = selected.file;
+	console.log("csvFileName "+csvFileName);
 
-		var fileStream = fs.createReadStream(csvFileName);
-		//console.log(fileStream);
-		
+	var fileStream = fs.createReadStream(csvFileName);
+	//console.log(fileStream);
+	
 
-		//new converter instance
-		var csvConverter = new Converter({constructResult:true});
+	//new converter instance
+	var csvConverter = new Converter({constructResult:true});
 
-		console.log("Converting\n");
+	console.log("Converting\n");
 
+	var json;
 
-		//end_parsed will be emitted once parsing finished
-		csvConverter.on("end_parsed",function(jsonObj){
-		   console.log(jsonObj); //here is your result json object
+	//end_parsed will be emitted once parsing finished
+	csvConverter.on("end_parsed",function(jsonObj){
+	   //console.log(jsonObj); //here is your result json object
+		 json = jsonObj;
+		fs.writeFile('page.js',JSON.stringify(jsonObj), function (err) {
+		  if (err) throw err;
+		  console.log('It\'s saved!');
 		});
+	});
 
-		//read from file
-		fileStream.pipe(csvConverter);
-		console.log('jsonObj end'); //here is your result json object
+	//read from file
+	fileStream.pipe(csvConverter);
+	
+	console.log('jsonObj end'); //here is your result json object
+	//console.log(json.label); //here is your result json object
 
 
 /*
-		xlsxj({
-		    input: selected.file, 
-		    output: null
-		  }, function(err, result) {
-		    if(err) {
-		      console.error(err);
-		    }else {
-		      console.log(result);
-		    }
-		 });
+	xlsxj({
+	    input: selected.file, 
+	    output: null
+	  }, function(err, result) {
+	    if(err) {
+	      console.error(err);
+	    }else {
+	      console.log(result);
+	    }
+	 });
 */
 
 	});
