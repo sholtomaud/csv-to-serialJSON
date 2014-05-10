@@ -17,7 +17,12 @@ console.log("Generate Gaffa code from .csv requirements file");
 
 glob("*.csv", function (err,files){
 var questions = [
-{
+	{
+		type: "input",
+    name: "appName",
+    message: "What is the name of your page?",
+  },
+	{
 		type: "list",
     name: "file",
     message: "What .csv file would you like to use??",
@@ -29,40 +34,34 @@ var questions = [
 
 inquirer.prompt(questions, function( selected ) {
   // Use user feedback for... whatever!!
-  console.log("\nReturn:");
-    console.log(JSON.stringify(selected,null, "  "));
+  //console.log("\nReturn:");
+  //  console.log(JSON.stringify(selected,null, "  "));
 
 
-    //Converter Class
-	
 	var csvFileName = selected.file;
-	console.log("csvFileName "+csvFileName);
-
+	var app = './pages/' + selected.appName + '.js';
+	
 	var fileStream = fs.createReadStream(csvFileName);
-	//console.log(fileStream);
 	
 
 	//new converter instance
 	var csvConverter = new Converter({constructResult:true});
 
-	console.log("Converting\n");
-
-	var json;
 
 	//end_parsed will be emitted once parsing finished
 	csvConverter.on("end_parsed",function(jsonObj){
-	   //console.log(jsonObj); //here is your result json object
-		 json = jsonObj;
-		fs.writeFile('page.js',JSON.stringify(jsonObj), function (err) {
+	  //console.log(jsonObj); //here is your result json object
+		
+		fs.writeFile(app,JSON.stringify(jsonObj), function (err) {
 		  if (err) throw err;
-		  console.log('It\'s saved!');
+		  console.log(selected.appName + ' saved to /pages/ folder');
 		});
 	});
 
 	//read from file
 	fileStream.pipe(csvConverter);
 	
-	console.log('jsonObj end'); //here is your result json object
+	//console.log('jsonObj end'); //here is your result json object
 	//console.log(json.label); //here is your result json object
 
 
