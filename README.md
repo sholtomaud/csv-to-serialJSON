@@ -11,7 +11,7 @@ Engineer a Gaffa-js form from csv
 ## Usage
 
 ```
-	node reqeng.js <filename>
+	node reqeng.js
 ```
 
 

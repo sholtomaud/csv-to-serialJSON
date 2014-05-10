@@ -1,6 +1,10 @@
 {
   "name": "gaffa-reqeng",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chromicon/gaffa-reqeng.git"
+  },
   "dependencies": {
     "google-spreadsheet":"^0.2.x",
     "xlsx-to-json":"^0.2.x",

@@ -13,10 +13,7 @@ var xlsxj = require("xlsx-to-json"),
 	inquirer = require("inquirer"),
 	glob = require("glob");
 
-console.log("Generate Gaffa code from .csv requirements file")
-
-
-
+console.log("Generate Gaffa code from .csv requirements file");
 
 glob("*.csv", function (err,files){
 	var questions = [
@@ -39,11 +36,17 @@ glob("*.csv", function (err,files){
 	    //Converter Class
 		
 		var csvFileName = selected.file;
+		console.log("csvFileName "+csvFileName);
+
 		var fileStream = fs.createReadStream(csvFileName);
+		//console.log(fileStream);
 		
-		console.log(fileStream);
+
 		//new converter instance
 		var csvConverter = new Converter({constructResult:true});
+
+		console.log("Converting\n");
+
 
 		//end_parsed will be emitted once parsing finished
 		csvConverter.on("end_parsed",function(jsonObj){
@@ -52,6 +55,7 @@ glob("*.csv", function (err,files){
 
 		//read from file
 		fileStream.pipe(csvConverter);
+		console.log('jsonObj end'); //here is your result json object
 
 
 /*
