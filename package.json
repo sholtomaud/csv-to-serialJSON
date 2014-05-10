@@ -1,8 +1,9 @@
 {
-  "name": "package",
-  "version": "0.0.0",
+  "name": "gaffa-reqeng",
+  "version": "0.0.1",
   "dependencies": {
-    "google-spreadsheet":"^0.2.x"
+    "google-spreadsheet":"^0.2.x",
+    "xlsx-to-json":"^0.2.x"
   },
   "devDependencies": {
     "stylus": "^0.42.2",
