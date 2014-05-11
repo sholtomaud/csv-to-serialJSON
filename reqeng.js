@@ -15,75 +15,153 @@ glob = require("glob");
 
 console.log("Generate Gaffa code from .csv requirements file");
 
-glob("*.csv", function (err,files){
-var questions = [
-	{
-		type: "input",
-    name: "appName",
-    message: "What is the name of your page?",
-  },
-	{
-		type: "list",
-    name: "file",
-    message: "What .csv file would you like to use??",
-    choices: files,
-    when: function( answers ) {
-      return answers.comments !== "Nope, all good!";
-    }
-	}];
-
-inquirer.prompt(questions, function( selected ) {
-  // Use user feedback for... whatever!!
-  //console.log("\nReturn:");
-  //  console.log(JSON.stringify(selected,null, "  "));
 
 
-	var csvFileName = selected.file;
-	var app = './pages/' + selected.appName + '.js';
+
+
+
+function getForm(){
+
+	var formJSON ={};
+
+	glob("*.csv", function (err,files){
+			
+	var questions = [
+		{
+			type: "input",
+	    name: "appName",
+	    message: "What is the name of your page?",
+	  },
+		{
+			type: "list",
+	    name: "file",
+	    message: "What .csv file would you like to use??",
+	    choices: files,
+	    when: function( answers ) {
+	      return answers.comments !== "Nope, all good!";
+	    }
+	}];	
 	
-	var fileStream = fs.createReadStream(csvFileName);
-	
+	inquirer.prompt(questions, function( selected ) {
+	  // Use user feedback for... whatever!!
+	  //console.log("\nReturn:");
+	  //  console.log(JSON.stringify(selected,null, "  "));
 
-	//new converter instance
-	var csvConverter = new Converter({constructResult:true});
 
-
-	//end_parsed will be emitted once parsing finished
-	csvConverter.on("end_parsed",function(jsonObj){
-	  //console.log(jsonObj); //here is your result json object
+		var csvFileName = selected.file;
+		var app = './pages/' + selected.appName + '.js';
 		
-		fs.writeFile(app,JSON.stringify(jsonObj), function (err) {
-		  if (err) throw err;
-		  console.log(selected.appName + ' saved to /pages/ folder');
+		var fileStream = fs.createReadStream(csvFileName);
+
+		//new converter instance
+		var csvConverter = new Converter({constructResult:true});
+
+
+		//end_parsed will be emitted once parsing finished
+		csvConverter.on("end_parsed",function(jsonObj){
+		  //console.log(jsonObj); //here is your result json object
+			
+			console.log('jsonObj end'); //here is your result json object
+			//console.log(jsonObj); //here is your result json object
+
+			jsonObj.forEach(function(key) {
+			    console.log('key [' + key.label +']');
+
+/*				
+				var formPage          = new views.Form(),
+	            formTitle          = new views.Container(),
+	            formTemplate          = new views.Container(),
+	            pageTitle               = new views.Label(), 
+	            jobName               = new views.Textbox(), 
+*/	            
+
+	            var label = key.label.replace(/\s/g, '') + ' = new views.Label();\n';
+
+	            fs.appendFile('somefile.js', label, function (err) {
+	            	if (err) throw err;
+				});
+				
+
+			});
+
+/*
+			var select = new views.Select();
+        	var someArray = ['a','b','c'];
+
+			
+        	select.options.value = someArray;
+        
+        
+        pageTitle.classes.value = 'subHead';
+        pageTitle.text.value = 'Ground Water Monitoring Field Form';
+        
+        	
+        	jobName.classes.value = 'input';
+        	
+
+        	jobName.value.binding = '[jobName]';
+  */                  
+
+
+
+
+
+			//fs.writeFile(app, JSON.stringify(jsonObj) , function (err) {
+			fs.writeFile(app, JSON.stringify(jsonObj) , function (err) {
+			  if (err) throw err;
+			  console.log(selected.appName + ' saved to /pages/ folder');
+			});
+
+			formJSON = jsonObj;
+
+			
+			
+			
+		});
+
+		//read from file
+		fileStream.pipe(csvConverter);
+		
+
+
+	/*
+		xlsxj({
+		    input: selected.file, 
+		    output: null
+		  }, function(err, result) {
+		    if(err) {
+		      console.error(err);
+		    }else {
+		      console.log(result);
+		    }
+		 });
+	*/
+
 		});
 	});
 
-	//read from file
-	fileStream.pipe(csvConverter);
-	
-	//console.log('jsonObj end'); //here is your result json object
-	//console.log(json.label); //here is your result json object
+	return formJSON;
+}
 
+
+function runApp(){
+
+	var formJSON = getForm();
+	console.log('formJSON');
+	console.log(formJSON);
 
 /*
-	xlsxj({
-	    input: selected.file, 
-	    output: null
-	  }, function(err, result) {
-	    if(err) {
-	      console.error(err);
-	    }else {
-	      console.log(result);
-	    }
-	 });
+fs.writeFile(app,JSON.stringify(jsonObj), function (err) {
+			  if (err) throw err;
+			  console.log(selected.appName + ' saved to /pages/ folder');
+			});
+
 */
 
-	});
-});
+}
 
 
-
-
+	runApp();
 
 /*
   
