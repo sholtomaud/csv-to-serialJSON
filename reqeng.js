@@ -64,25 +64,49 @@ function getForm(){
 			console.log('jsonObj end'); //here is your result json object
 			//console.log(jsonObj); //here is your result json object
 
-			jsonObj.forEach(function(key) {
-			    console.log('key [' + key.label +']');
-
-/*				
-				var formPage          = new views.Form(),
-	            formTitle          = new views.Container(),
-	            formTemplate          = new views.Container(),
-	            pageTitle               = new views.Label(), 
-	            jobName               = new views.Textbox(), 
-*/	            
-
-	            var label = key.label.replace(/\s/g, '') + ' = new views.Label();\n';
-
-	            fs.appendFile('somefile.js', label, function (err) {
-	            	if (err) throw err;
-				});
-				
-
+		  fs.appendFile('json.json', JSON.stringify(jsonObj), function (err) {
+      	if (err) throw err;
 			});
+		  
+//		  label,type,class,rows,cols,postLabel,placeholder,maxLength,size,required,validation,lookups,binding,comment
+
+		  fs.appendFile('output.js', 'function createForm(){\n  var formPage = new views.Form();\n', function (err) {
+      	if (err) throw err;
+			});
+	
+
+			//jsonObj.forEach(function(key) {
+      //  fs.appendFile('output.js', 'var ' + key.label.replace(/\s/g, '') + ' = new views.Label();\n', function (err) {
+      //  	if (err) throw err;
+		//		});
+		//	});
+
+			jsonObj.forEach(function(key) {
+        fs.appendFile('output.js', '  var ' + key.label.replace(/\s/g, '') + 'Label = new views.Label();\n  var ' + key.label.replace(/\s/g, '') + key.type + ' = new views.'+key.type+'();\n\n', function (err) {
+        	if (err) throw err;
+				});
+			});
+
+			jsonObj.forEach(function(key) {
+        fs.appendFile('output.js', key.label.replace(/\s/g, '') + '.text.value = \''+ key.label +'\';\n' + key.label.replace(/\s/g, '') + '.classes.value = \''+ key.class +'\';\n\n', function (err) {
+        	if (err) throw err;
+				});
+			});
+
+		  fs.appendFile('output.js', '  formPage.views.content.add([\n', function (err) {
+      	if (err) throw err;
+			});
+
+		  jsonObj.forEach(function(key) {
+        fs.appendFile('output.js', key.label.replace(/\s/g, '') + 'Label,\n' + key.label.replace(/\s/g, '') + key.type + ',\n', function (err) {
+        	if (err) throw err;
+				});
+			});
+
+		  fs.appendFile('output.js', '  ]);\n  formPage.path = \'[/form]\';', function (err) {
+      	if (err) throw err;
+			});
+
 
 /*
 			var select = new views.Select();
