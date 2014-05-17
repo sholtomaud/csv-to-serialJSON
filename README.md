@@ -1,11 +1,11 @@
-# Gaffa-ReqEng
+# Gaffa-ReqEng-json
 
-Engineer a Gaffa-js form from csv
+Takes a csv of form requirements and writes a json file as a serialised Gaffa view
 
 ## Install
 
 ```
-  Not published on npm yet
+  Not published on npm yet - clone from Git
 ```
 
 ## Usage
