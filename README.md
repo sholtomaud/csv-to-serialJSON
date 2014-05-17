@@ -1,6 +1,6 @@
-# Gaffa-ReqEng-json
+# csv-to-serialJSON
 
-Takes a csv of form requirements and writes a json file as a serialised Gaffa view
+Takes a csv of requirements and writes a serialised json file which can be rendered as a Gaffa view
 
 ## Install
 
